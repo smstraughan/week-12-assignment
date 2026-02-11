@@ -55,12 +55,12 @@ fetchRunData()
 
 
 
-//Adding POST Functionality to Form 
+//Adding Functionality to Form 
 
 async function onAddRunClick(event) { //Again adding async to the function name so that it allows "await"
   event.preventDefault(); //prevents default behavior of submit button to reload page
   
-  const newRun = { //collects the new run data from the form and puts it in json format to add to the server
+  const newRun = { //collects the new run data from the form
     date: document.getElementById('date').value,
     workout: document.getElementById('workout').value,
     distance: document.getElementById('distance').value,
