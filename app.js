@@ -31,9 +31,9 @@ async function fetchRunData() {  //creating an async function using fetch to GET
 
   //this renders the data front end in html
   data.forEach(run => {
-    //create a table row for each student
+    //create a table row for each run entry
     const row = `
-    <tr data-id="${run.id}"> 
+    <tr data-id="${run.id}"> <!--comes in handy when we need to delete-->
       <td>${run.date}</td>
       <td>${run.workout}</td>
       <td>${run.distance}</td>
@@ -42,7 +42,7 @@ async function fetchRunData() {  //creating an async function using fetch to GET
         <button class="delete-btn">Delete</button>
       </td>
     </tr>`
-    $('tbody').append(row);
+    $('tbody').append(row);//jquery to add the row to the table body
   });
 
   return data;
@@ -79,7 +79,6 @@ async function onAddRunClick(event) { //Again adding async to the function name 
     
     //Below: If we successfully update the backend json server then we update the front end table
     if (response.ok) { // the data-id stores the id of the data entry for delete functionality later
-        console.log(data.id)
         const row = `
       <tr data-id="${data.id}"> 
         <td>${data.date}</td>
@@ -111,7 +110,6 @@ document.querySelector('tbody').addEventListener('click', async function(event) 
   if (event.target.classList.contains('delete-btn')) { //if the click is on a delete button
     const row = event.target.closest('tr'); //we get the row of the delete button that was clicked
     const runId = row.dataset.id;  // Get the id from json server
-    console.log(runId); //this was from a debugging process for me 
     
     const deleteURL = `http://localhost:3000/runTrainingLog/${runId}`;//this takes us to the entry with the runID that we want to delete
     
