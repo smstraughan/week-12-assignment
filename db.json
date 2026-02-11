@@ -1,0 +1,18 @@
+{
+  "runTrainingLog": [
+    {
+      "id": "1",
+      "date": "2026-02-10",
+      "workout": "Walk 1 min, Run 4 min, 8x",
+      "distance": "3.2",
+      "time": "40:00"
+    },
+    {
+      "id": "2",
+      "date": "2026-02-11",
+      "workout": "Walk 1 min, Run 6 min, 4x",
+      "distance": "2.3",
+      "time": "28:00"
+    }
+  ]
+}

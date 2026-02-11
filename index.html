@@ -3,19 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Run Log</title>
+
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <!--Hearder-->
+<body class="p-4">
+  <!--Header-->
+  <header id="header" class="container text-center p-4">
+    <h1>Race Training Log</h1>
+  </header>
 
+  <!--Table-->
+  <div class="container">
+    <table id="table" class="table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Workout Description</th>
+          <th>Distance (miles)</th>
+          <th>Time (mm:ss)</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
+  <!--Form-->
+  <div class="container">
+    <form id="new-run">
+      <label for="date">Date:</label>
+      <input type="date" id="date" name="date" required>
 
-    <!--Table showing run diary?? or Phone Book? Integrated Delete Buttons-->
+      <label for="workout">Workout Description:</label>
+      <input type="text" id="workout" name="workout" placeholder="Run/Walk times, Weight Training, etc." required>
 
+      <label for="distance">Distance (miles):</label>
+      <input type="text" id="distance" name="distance" required>
 
-    <!--Form for submitting a new phone book entry-->
+      <label for="time">Time (mm:ss):</label>
+      <input type="text" id="time" name="time" required>
+
+      <button type="submit">Add Run</button>
+    </form>
+  </div>
 
     <!--Scripts-->
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="app.js"></script>
 
 
 </body>

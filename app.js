@@ -6,35 +6,42 @@
 -Include a way to get entities from the API and display them
 -You do NOT need update, but you can add it if you'd like
 -Use Bootstrap and/or CSS to style your project
+
+
 */
 
 
 
 //Setup Json Server
 
+// In console type: npm install -g json-server
+ //In console type: json-server --watch db.json
+
+
+
 //Get from JSON Server -- this will both get from the server and add a row on the front end 
+const URL = 'http://localhost:3000/runTrainingLog'
 
-const URL = 'http://localhost:3000/studentRoster'
-
-async function fetchStudentData() {
-  const response = await fetch(URL)
+async function fetchRunData() {  //creating an async function using fetch to GET data from "back-end" json server
+  const response = await fetch(URL) //use await so that we wait for this to run rather than getting back a promise
   const data = await response.json()
 
-  data.forEach(student => {
+  //console log the data that we recieve from the backend
+  console.log(data)
+
+  //this renders the data front end in html
+  data.forEach(run => {
     //create a table row for each student
     const row = `
-    <tr>
-      <td>${student.fullName}</td>
-      <td>${student.researchAssignment}</td>
-      <td>${student.id}</td>
-      <td>
-        <button class="edit-btn">Edit</button>
-      </td>
+    <tr data-id="${run.id}"> 
+      <td>${run.date}</td>
+      <td>${run.workout}</td>
+      <td>${run.distance}</td>
+      <td>${run.time}</td>
       <td>
         <button class="delete-btn">Delete</button>
       </td>
-    </tr>;
-    //Append to table body`
+    </tr>`
     $('tbody').append(row);
   });
 
@@ -42,57 +49,85 @@ async function fetchStudentData() {
 
 }
 
-fetchStudentData()
+//Run the code for start up so that it is displaying when we open the page
+fetchRunData()
 
 
 
 
-//MAKING a form work with functioning submit button
+//Adding POST Functionality to Form 
 
-async function submitNewStudent(event) {
-  event.preventDefault(); // Stop form from reloading page
+async function onAddRunClick(event) { //Again adding async to the function name so that it allows "await"
+  event.preventDefault(); //prevents default behavior of submit button to reload page
   
-  const URL = 'http://localhost:3000/studentRoster';
-  
-  // Create the new student object
-  const newStudent = {
-    fullName: document.getElementById('name').value,
-    researchAssignment: document.getElementById('animal').value
+  const newRun = { //collects the new run data from the form and puts it in json format to add to the server
+    date: document.getElementById('date').value,
+    workout: document.getElementById('workout').value,
+    distance: document.getElementById('distance').value,
+    time: document.getElementById('time').value
   };
   
-  try {
-    const response = await fetch(URL, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify(newStudent)
+  //Below we first update the back end JSON server
+  try { //this try function allows us to catch errors
+    const response = await fetch(URL, { //using the fetch method POST to add the data to the JSON server
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(newRun)
     });
     
-    const data = await response.json(); // Server returns the new student with ID
+    const data = await response.json();
     
-    // Add the new row to the table
-    const row = `
-    <tr>
-      <td>${data.fullName}</td>
-      <td>${data.researchAssignment}</td>
-      <td>${data.id}</td>
-      <td>
-        <button class="edit-btn">Edit</button>
-      </td>
-      <td>
-        <button class="delete-btn">Delete</button>
-      </td>
-    </tr>`;
+    //Below: If we successfully update the backend json server then we update the front end table
+    if (response.ok) { // the data-id stores the id of the data entry for delete functionality later
+        console.log(data.id)
+        const row = `
+      <tr data-id="${data.id}"> 
+        <td>${data.date}</td>
+        <td>${data.workout}</td>
+        <td>${data.distance}</td>
+        <td>${data.time}</td>
+        <td>
+          <button class="delete-btn">Delete</button>
+        </td>
+      </tr>`;
+      
+      document.querySelector('tbody').insertAdjacentHTML('beforeend', row);
+      document.getElementById('new-run').reset(); //resets the run form to empty
+    }
     
-    document.querySelector('tbody').insertAdjacentHTML('beforeend', row);
-    
-    // Clear the form
-    document.getElementById('name').value = '';
-    document.getElementById('animal').value = '';
-    
+    //Catch throws an error if we do not successfully update the backend 
   } catch (error) {
-    console.error('Error submitting student:', error);
+    console.error('Error adding run:', error);
   }
 }
 
-// Attach to form submit event
-document.querySelector('form').addEventListener('submit', submitNewStudent);
+// Attach to form button -- add event listener
+document.getElementById('new-run').addEventListener('submit', onAddRunClick);
+
+
+//Adding delete button functionality
+
+document.querySelector('tbody').addEventListener('click', async function(event) { //adding an event listener to the tbody-- listens for click
+  if (event.target.classList.contains('delete-btn')) { //if the click is on a delete button
+    const row = event.target.closest('tr'); //we get the row of the delete button that was clicked
+    const runId = row.dataset.id;  // Get the id from json server
+    console.log(runId); //this was from a debugging process for me 
+    
+    const deleteURL = `http://localhost:3000/runTrainingLog/${runId}`;//this takes us to the entry with the runID that we want to delete
+    
+    //First updating on the backend
+    try {
+      const response = await fetch(deleteURL, { //using fetch method DELETE
+        method: 'DELETE'
+      });
+      
+      if (response.ok) { //IF we are able to delete from backend then we update the front end
+        row.remove();
+        console.log('Entry deleted successfully');
+      }
+      
+    } catch (error) { //throw an error if we are unable to delete on teh backend
+      console.error('Error deleting entry:', error); 
+    }
+  }
+});
